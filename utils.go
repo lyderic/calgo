@@ -1,12 +1,17 @@
 package main
 
-import "unicode"
+import (
+	"fmt"
+	"strconv"
+)
 
-func IsUpper(s string) bool {
-	for _, r := range s {
-		if !unicode.IsUpper(r) && unicode.IsLetter(r) {
-			return false
-		}
-	}
-	return true
+func IsNumeric(s string) bool {
+	_, err := strconv.ParseFloat(s, 64)
+	return err == nil
+}
+
+func report(book Book, message string) {
+	fmt.Printf("[%04d] %s (%s): %s\n",
+		book.Id, book.Title, book.Author,
+		message)
 }

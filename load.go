@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
 
@@ -16,7 +17,7 @@ func load() (formachine []byte) {
 		cmd.Stderr = os.Stderr
 		output, err := cmd.Output()
 		if err != nil {
-			panic(err)
+			log.Fatal(err)
 		}
 		fmt.Print("\r          \r")
 		ioutil.WriteFile(cache, output, 0644)
@@ -25,7 +26,7 @@ func load() (formachine []byte) {
 	}
 	formachine, err := ioutil.ReadFile(cache)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	return
 }

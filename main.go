@@ -4,46 +4,42 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"log"
+
+	"github.com/lyderic/tools"
 )
 
+func init() {
+	log.SetFlags(log.Lshortfile)
+}
+
 func main() {
-	doreset := flag.Bool("reset", false, "reset cache")
-	dofindauthor := flag.Bool("a", false, "find author")
-	dofindlanguage := flag.Bool("l", false, "find language")
-	dofindfrench := flag.Bool("f", false, "find French")
-	dofindupper := flag.Bool("u", false, "find uppercase titles")
-	dofindcomma := flag.Bool("c", false, "find authors with commas in their name")
-	dofindsuspect := flag.Bool("s", false, "find books with suspect title")
+	doprobeauthor := flag.Bool("a", false, "probe author")
+	doprobetitle := flag.Bool("t", false, "probe title")
+	doprobelanguage := flag.Bool("l", false, "probe language")
 	flag.Usage = usage
 	flag.Parse()
 	fix := false
 	if len(flag.Args()) != 0 {
-		if flag.Args()[0] == "fix" {
+		switch flag.Args()[0] {
+		case "fix":
 			fix = true
+		case "reset":
+			reset()
+		default:
+			tools.PrintYellowln("no action specified, showing only")
 		}
-	}
-	if *doreset {
-		reset()
 	}
 	books := calibreToJson()
 	fmt.Println("Loaded", len(books), "books")
-	if *dofindauthor {
-		findauthor(books, fix)
+	if *doprobeauthor {
+		author(books, fix)
 	}
-	if *dofindlanguage {
-		findlanguage(books, fix)
+	if *doprobetitle {
+		title(books, fix)
 	}
-	if *dofindfrench {
-		findfrench(books, fix)
-	}
-	if *dofindupper {
-		findupper(books, fix)
-	}
-	if *dofindcomma {
-		findcomma(books, fix)
-	}
-	if *dofindsuspect {
-		findsuspect(books, fix)
+	if *doprobelanguage {
+		language(books, fix)
 	}
 	if fix {
 		reset()
@@ -56,5 +52,7 @@ func calibreToJson() (books []Book) {
 }
 
 func usage() {
+	fmt.Println("calgo <option> [fix|reset]")
+	fmt.Println("Options:")
 	flag.PrintDefaults()
 }
