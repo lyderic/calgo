@@ -73,3 +73,22 @@ func fixDoubleQuoteInTitle(book Book) {
 	}
 	tools.PrintYellowln("done.")
 }
+
+func proposeFixTitle(book Book) {
+	cleanTitle, err := tools.VimString(book.Title)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if cleanTitle == book.Title {
+		configuration.Accepted = append(configuration.Accepted, book.Title)
+		return
+	}
+	cmd := exec.Command("calibredb", "set_metadata",
+		"-f", "title:"+cleanTitle, strconv.Itoa(book.Id))
+	cmd.Stderr = os.Stderr
+	err = cmd.Run()
+	if err != nil {
+		log.Fatal(err)
+	}
+	tools.PrintYellowln(book.Title, "->", cleanTitle)
+}

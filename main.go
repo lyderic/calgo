@@ -14,9 +14,14 @@ func init() {
 }
 
 func main() {
+	err := loadConfiguration()
+	if err != nil {
+		panic(err)
+	}
 	doprobeauthor := flag.Bool("a", false, "probe author")
 	doprobetitle := flag.Bool("t", false, "probe title")
 	doprobelanguage := flag.Bool("l", false, "probe language")
+	dodebug := flag.Bool("d", false, "debug")
 	flag.Usage = usage
 	flag.Parse()
 	fix := false
@@ -32,6 +37,9 @@ func main() {
 	}
 	books := calibreToJson()
 	fmt.Println("Loaded", len(books), "books")
+	if *dodebug {
+		dumpConfiguration()
+	}
 	if *doprobeauthor {
 		author(books, fix)
 	}
@@ -43,6 +51,10 @@ func main() {
 	}
 	if fix {
 		reset()
+	}
+	err = saveConfiguration()
+	if err != nil {
+		panic(err)
 	}
 }
 

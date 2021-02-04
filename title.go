@@ -15,15 +15,14 @@ func title(books []Book, fix bool) {
 		if isAccepted(book.Title) { // list of valid title in data.go
 			continue
 		}
+		words := strings.Fields(book.Title)
 		if isFirstLetterLowerCase(book.Title) {
 			report(book, "first letter is not capitalised!")
 			count++
-			continue
 		}
-		if containsUpperCaseWord(book.Title) {
+		if containsUpperCaseWord(words) {
 			report(book, "contains at least one word that is all upper case!")
 			count++
-			continue
 		}
 		if strings.Contains(book.Title, " - ") {
 			report(book, "contains a dandling hyphen!")
@@ -31,7 +30,6 @@ func title(books []Book, fix bool) {
 				fixDandlingHyphenInTitle(book)
 			}
 			count++
-			continue
 		}
 		if strings.Contains(book.Title, "\"") {
 			report(book, "contains a double quote")
@@ -39,7 +37,13 @@ func title(books []Book, fix bool) {
 				fixDoubleQuoteInTitle(book)
 			}
 			count++
-			continue
+		}
+		if secondWordIsCapitalized(words) {
+			report(book, "second word is capitalized!")
+			if fix {
+				proposeFixTitle(book)
+			}
+			count++
 		}
 	}
 	if count > 0 {
@@ -57,10 +61,9 @@ func isFirstLetterLowerCase(s string) (match bool) {
 	return
 }
 
-func containsUpperCaseWord(s string) bool {
-	bits := strings.Fields(s)
-	for _, bit := range bits {
-		for _, r := range bit {
+func containsUpperCaseWord(words []string) bool {
+	for _, word := range words {
+		for _, r := range word {
 			if !unicode.IsUpper(r) && unicode.IsLetter(r) {
 				return false
 			}
@@ -69,8 +72,20 @@ func containsUpperCaseWord(s string) bool {
 	return true
 }
 
+func secondWordIsCapitalized(words []string) bool {
+	if len(words) < 2 {
+		return false
+	}
+	if strings.HasPrefix(words[0], "[") { // for series
+		return false
+	}
+	secondWord := words[1]
+	runes := []rune(secondWord)
+	return unicode.IsUpper(runes[0])
+}
+
 func isAccepted(s string) bool {
-	for _, accepted := range valids {
+	for _, accepted := range configuration.Accepted {
 		if s == accepted {
 			return true
 		}
