@@ -12,12 +12,10 @@ func author(books []Book, fix bool) {
 		if book.Author != book.Sort {
 			report(book, "["+book.Sort+"] authors and author_sort mismatch!")
 			count++
-			continue
 		}
 		if strings.Contains(book.Author, ",") {
 			report(book, "comma in authors field!")
 			count++
-			continue
 		}
 	}
 	if count > 0 {

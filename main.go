@@ -21,6 +21,7 @@ func main() {
 	doprobeauthor := flag.Bool("a", false, "probe author")
 	doprobetitle := flag.Bool("t", false, "probe title")
 	doprobelanguage := flag.Bool("l", false, "probe language")
+	doprobemetadata := flag.Bool("m", false, "probe metadata")
 	dodebug := flag.Bool("d", false, "debug")
 	flag.Usage = usage
 	flag.Parse()
@@ -48,6 +49,9 @@ func main() {
 	}
 	if *doprobelanguage {
 		language(books, fix)
+	}
+	if *doprobemetadata {
+		metadata(books)
 	}
 	if fix {
 		reset()
