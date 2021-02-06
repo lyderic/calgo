@@ -1,6 +1,7 @@
 package main
 
 import (
+	"archive/zip"
 	"fmt"
 
 	"github.com/lyderic/tools"
@@ -18,6 +19,7 @@ func check(calibreBooks []Book, fsentries []FSEntry) {
 }
 
 func checkIds(books []Book, entries []FSEntry) bool {
+	fmt.Print("Checking IDs on file system exist in the calibre DB... ")
 	for _, entry := range entries {
 		found := false
 		for _, book := range books {
@@ -31,9 +33,31 @@ func checkIds(books []Book, entries []FSEntry) bool {
 			return false
 		}
 	}
+	fmt.Println("done.")
 	return true
 }
 
-func checkContentOpfInEpub(entries []FSEntry) bool {
-	return false
+func checkContentOpfInEpub(entries []FSEntry) (result bool) {
+	fmt.Print("Checking epub on filesystem have a content.opf file... ")
+	result = true
+	for _, entry := range entries {
+		reader, err := zip.OpenReader(entry.Fullpath)
+		if err != nil {
+			tools.PrintRedln("Problem with this file:", entry.Fullpath)
+			panic(err)
+		}
+		found := false
+		for _, file := range reader.File {
+			if file.FileInfo().Name() == "content.opf" {
+				found = true
+				break
+			}
+		}
+		if !found {
+			tools.PrintRedln("File with no content.opf:", entry.Fullpath)
+			result = false
+		}
+	}
+	fmt.Println("done.")
+	return
 }
