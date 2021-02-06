@@ -1,32 +1,52 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
-
-	"github.com/lyderic/tools"
+	"path/filepath"
 )
 
-func load() (formachine []byte) {
+func loadFromCalibre() (books []Book) {
+	var raw []byte
 	if _, err := os.Stat(cache); os.IsNotExist(err) {
-		fmt.Print("loading...")
+		fmt.Print("loading calibre data...")
 		cmd := exec.Command("calibredb", "list", "-f", "all", "--for-machine")
 		cmd.Stderr = os.Stderr
-		output, err := cmd.Output()
+		raw, err = cmd.Output()
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Print("\r          \r")
-		ioutil.WriteFile(cache, output, 0644)
-	} else {
-		tools.PrintGreenln("cache found:", cache)
+		fmt.Print("\r                              \r")
 	}
-	formachine, err := ioutil.ReadFile(cache)
+	json.Unmarshal(raw, &books)
+	dbg(fmt.Sprintf("Loaded from calibre: %d books", len(books)))
+	return
+}
+
+func loadFromFilesystem() (fsentries []FSEntry) {
+	fmt.Print("loading filesystem data...")
+	err := filepath.Walk(basedir,
+		func(path string, finfo os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+			if filepath.Ext(path) == ".epub" {
+				var entry FSEntry
+				entry.Fullpath = path
+				entry.Filename = finfo.Name()
+				entry.Parentdir = filepath.Dir(path)
+				entry.Id = extractIdFromPath(entry.Parentdir)
+				fsentries = append(fsentries, entry)
+			}
+			return nil
+		})
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Print("\r                              \r")
+	dbg(fmt.Sprintf("Loaded from filesystem: %d entries", len(fsentries)))
 	return
 }

@@ -1,8 +1,13 @@
 package main
 
 const (
-	cache = "/dev/shm/calgo-cache.json"
-	conf  = "/home/lyderic/.calgo.yaml"
+	cache   = "/dev/shm/calgo-cache.json"
+	conf    = "/home/lyderic/.calgo.yaml"
+	basedir = "/home/lyderic/ebooks/collections/fr"
+)
+
+var (
+	debug *bool
 )
 
 type Book struct {
@@ -16,6 +21,13 @@ type Book struct {
 	Formats     []string `json:"formats"`
 	Publisher   string   `json:"publisher"`
 	Size        int      `json:"size"`
+}
+
+type FSEntry struct {
+	Id        int
+	Fullpath  string
+	Filename  string
+	Parentdir string
 }
 
 type Opf struct {

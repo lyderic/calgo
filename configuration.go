@@ -15,10 +15,10 @@ type Configuration struct {
 
 var configuration Configuration
 
-func loadConfiguration() (err error) {
-	if _, err = os.Stat(conf); os.IsNotExist(err) {
+func loadConfiguration() {
+	if _, err := os.Stat(conf); os.IsNotExist(err) {
 		tools.PrintYellowln(conf, ": not found")
-		return nil
+		return
 	}
 	content, err := ioutil.ReadFile(conf)
 	if err != nil {
@@ -26,7 +26,9 @@ func loadConfiguration() (err error) {
 	}
 	err = yaml.Unmarshal(content, &configuration)
 	if err == nil {
-		tools.PrintGreenln("configuration loaded from", conf)
+		dbg("configuration loaded from " + conf)
+	} else {
+		log.Fatal(err)
 	}
 	return
 }
@@ -38,8 +40,9 @@ func saveConfiguration() (err error) {
 	}
 	err = ioutil.WriteFile(conf, data, 0644)
 	if err == nil {
-		tools.PrintGreenln("configuration saved to", conf)
+		dbg("configuration saved to " + conf)
 	}
+
 	return
 }
 
