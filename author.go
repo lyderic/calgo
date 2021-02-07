@@ -1,12 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/lyderic/tools"
 )
 
-func author(books []Book, fix bool) {
+func author(books []Book) (result bool) {
+	fmt.Println("Checking authors... ")
 	count := 0
 	for _, book := range books {
 		if book.Author != book.Sort {
@@ -19,8 +21,11 @@ func author(books []Book, fix bool) {
 		}
 	}
 	if count > 0 {
-		tools.PrintRedln(count, "book(s) have incorrect author!")
+		result = false
+		tools.PrintRedln("> Failed!")
 	} else {
-		tools.PrintGreenln("All books have correct author. All good!")
+		result = true
+		tools.PrintGreenln("> Ok")
 	}
+	return
 }

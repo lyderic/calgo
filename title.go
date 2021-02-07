@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 	"strings"
@@ -9,7 +10,8 @@ import (
 	"github.com/lyderic/tools"
 )
 
-func title(books []Book, fix bool) {
+func title(books []Book) (result bool) {
+	fmt.Println("Checking titles...")
 	count := 0
 	for _, book := range books {
 		if isAccepted(book.Title) { // list of valid title in data.go
@@ -26,31 +28,25 @@ func title(books []Book, fix bool) {
 		}
 		if strings.Contains(book.Title, " - ") {
 			report(book, "contains a dandling hyphen!")
-			if fix {
-				fixDandlingHyphenInTitle(book)
-			}
 			count++
 		}
 		if strings.Contains(book.Title, "\"") {
 			report(book, "contains a double quote")
-			if fix {
-				fixDoubleQuoteInTitle(book)
-			}
 			count++
 		}
 		if secondWordIsCapitalized(words) {
 			report(book, "second word is capitalized!")
-			if fix {
-				proposeFixTitle(book)
-			}
 			count++
 		}
 	}
 	if count > 0 {
-		tools.PrintRedln(count, "book(s) have incorrect title!")
+		result = false
+		tools.PrintRedln("> Failed!")
 	} else {
-		tools.PrintGreenln("All books have correct title. All good!")
+		result = true
+		tools.PrintGreenln("> Ok")
 	}
+	return
 }
 
 func isFirstLetterLowerCase(s string) (match bool) {

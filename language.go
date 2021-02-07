@@ -1,10 +1,13 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/lyderic/tools"
 )
 
-func language(books []Book, fix bool) {
+func language(books []Book) (result bool) {
+	fmt.Println("Checking language... ")
 	count := 0
 	for _, book := range books {
 		if len(book.Languages) == 0 {
@@ -19,8 +22,11 @@ func language(books []Book, fix bool) {
 		}
 	}
 	if count > 0 {
-		tools.PrintRedln(count, "book(s) have incorrect language")
+		result = false
+		tools.PrintRedln("> Failed!")
 	} else {
-		tools.PrintGreenln("All books have correct language. All good!")
+		result = true
+		tools.PrintGreenln("> Ok")
 	}
+	return
 }

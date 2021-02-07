@@ -7,6 +7,8 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+
+	"github.com/lyderic/tools"
 )
 
 func loadFromCalibre() (books []Book) {
@@ -17,6 +19,7 @@ func loadFromCalibre() (books []Book) {
 		cmd.Stderr = os.Stderr
 		raw, err = cmd.Output()
 		if err != nil {
+			tools.PrintRedln("An instance of calibre is most probably already running!")
 			log.Fatal(err)
 		}
 		fmt.Print("\r                              \r")
