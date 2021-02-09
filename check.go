@@ -12,8 +12,8 @@ import (
 func check(calibreBooks []Book, fsentries []FSEntry) {
 	fmt.Println("Number of ebooks recorded in calibre:", len(calibreBooks))
 	fmt.Println("Number of ebooks found on filesystem:", len(fsentries))
-	if performCalibreBuiltinCheck() &&
-		checkContentOpfInEpub(fsentries) &&
+	//if performCalibreBuiltinCheck() &&
+	if checkContentOpfInEpub(fsentries) &&
 		title(calibreBooks) && author(calibreBooks) && language(calibreBooks) {
 		tools.PrintGreenln("Data OK")
 	} else {

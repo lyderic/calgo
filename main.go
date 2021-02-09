@@ -17,15 +17,20 @@ func main() {
 	flag.Usage = usage
 	flag.Parse()
 	loadConfiguration()
-	calibreBooks := loadFromCalibre()
-	fsentries := loadFromFilesystem()
 	if len(flag.Args()) != 0 {
 		switch flag.Args()[0] {
 		case "check":
+			calibreBooks := loadFromCalibre()
+			fsentries := loadFromFilesystem()
 			check(calibreBooks, fsentries)
+		case "backup":
+			tools.PrintBlueln("In preparation.....")
 		default:
-			tools.PrintRedln("no action specified")
+			dbg("Executing calibredb command...")
+			calibre(flag.Args())
 		}
+	} else {
+		usage()
 	}
 	err := saveConfiguration()
 	if err != nil {

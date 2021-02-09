@@ -15,8 +15,8 @@ func language(books []Book) (result bool) {
 			count++
 			continue
 		}
-		if book.Languages[0] != "fra" {
-			report(book, "language not French!")
+		if book.Languages[0] != c.Language {
+			report(book, fmt.Sprintf("language not %q!", c.Language))
 			count++
 			continue
 		}

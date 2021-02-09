@@ -5,23 +5,14 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"os/exec"
 	"path/filepath"
-
-	"github.com/lyderic/tools"
 )
 
 func loadFromCalibre() (books []Book) {
 	var raw []byte
 	if _, err := os.Stat(cache); os.IsNotExist(err) {
 		fmt.Print("loading calibre data...")
-		cmd := exec.Command("calibredb", "list", "-f", "all", "--for-machine")
-		cmd.Stderr = os.Stderr
-		raw, err = cmd.Output()
-		if err != nil {
-			tools.PrintRedln("An instance of calibre is most probably already running!")
-			log.Fatal(err)
-		}
+		raw = calibreOutput("list", "-f", "all", "--for-machine")
 		fmt.Print("\r                              \r")
 	}
 	json.Unmarshal(raw, &books)

@@ -80,7 +80,7 @@ func proposeFixTitle(book Book) {
 		log.Fatal(err)
 	}
 	if cleanTitle == book.Title {
-		configuration.Accepted = append(configuration.Accepted, book.Title)
+		c.Accepted = append(c.Accepted, book.Title)
 		return
 	}
 	cmd := exec.Command("calibredb", "set_metadata",

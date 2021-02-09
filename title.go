@@ -34,10 +34,12 @@ func title(books []Book) (result bool) {
 			report(book, "contains a double quote")
 			count++
 		}
-		if secondWordIsCapitalized(words) {
-			report(book, "second word is capitalized!")
-			count++
-		}
+		/*
+			if secondWordIsCapitalized(words) {
+				report(book, "second word is capitalized!")
+				count++
+			}
+		*/
 	}
 	if count > 0 {
 		result = false
@@ -81,7 +83,7 @@ func secondWordIsCapitalized(words []string) bool {
 }
 
 func isAccepted(s string) bool {
-	for _, accepted := range configuration.Accepted {
+	for _, accepted := range c.Accepted {
 		if s == accepted {
 			return true
 		}

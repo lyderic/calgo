@@ -10,21 +10,26 @@ import (
 )
 
 type Configuration struct {
+	Url      string   `yaml:"url"`
+	Language string   `yaml:"language"`
 	Accepted []string `yaml:"accepted"`
 }
 
-var configuration Configuration
+var c Configuration
 
 func loadConfiguration() {
 	if _, err := os.Stat(conf); os.IsNotExist(err) {
-		tools.PrintYellowln(conf, ": not found")
+		tools.PrintYellowln(conf, ": not found. Using defaults:")
+		c.Url = "http://localhost:8080"
+		c.Language = "eng"
+		tools.PrintYellowf("%v\n", c)
 		return
 	}
 	content, err := ioutil.ReadFile(conf)
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = yaml.Unmarshal(content, &configuration)
+	err = yaml.Unmarshal(content, &c)
 	if err == nil {
 		dbg("configuration loaded from " + conf)
 	} else {
@@ -34,7 +39,7 @@ func loadConfiguration() {
 }
 
 func saveConfiguration() (err error) {
-	data, err := yaml.Marshal(&configuration)
+	data, err := yaml.Marshal(&c)
 	if err != nil {
 		return
 	}
@@ -47,5 +52,5 @@ func saveConfiguration() (err error) {
 }
 
 func dumpConfiguration() {
-	tools.PrintYellowf("Configuration: %#v\n", configuration)
+	tools.PrintYellowf("Configuration: %#v\n", c)
 }
