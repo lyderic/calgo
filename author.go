@@ -7,16 +7,16 @@ import (
 	"github.com/lyderic/tools"
 )
 
-func author(books []Book) (result bool) {
+func author(calibreBooks []CalibreBook) (result bool) {
 	fmt.Println("Checking authors... ")
 	count := 0
-	for _, book := range books {
-		if book.Author != book.Sort {
-			report(book, "["+book.Sort+"] authors and author_sort mismatch!")
+	for _, calibreBook := range calibreBooks {
+		if calibreBook.Author != calibreBook.Sort {
+			report(calibreBook, "["+calibreBook.Sort+"] authors and author_sort mismatch!")
 			count++
 		}
-		if strings.Contains(book.Author, ",") {
-			report(book, "comma in authors field!")
+		if strings.Contains(calibreBook.Author, ",") {
+			report(calibreBook, "comma in authors field!")
 			count++
 		}
 	}

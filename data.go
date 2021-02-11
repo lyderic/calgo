@@ -1,16 +1,15 @@
 package main
 
 const (
-	cache   = "/dev/shm/calgo-cache.json"
-	conf    = "/home/lyderic/.calgo.yaml"
-	basedir = "/home/lyderic/ebooks/collections/fr"
+	cache      = "/dev/shm/calgo-cache.json"
+	configFile = "/home/lyderic/.calgo.yaml"
 )
 
 var (
 	debug *bool
 )
 
-type Book struct {
+type CalibreBook struct {
 	Id          int      `json:"id"`
 	Title       string   `json:"title"`
 	Author      string   `json:"authors"`
@@ -23,17 +22,9 @@ type Book struct {
 	Size        int      `json:"size"`
 }
 
-type FSEntry struct {
-	Id        int
-	Fullpath  string
-	Filename  string
-	Parentdir string
-}
-
-type Opf struct {
-	Title       string `xml:"dc:title"`
-	Author      string `xml:"dc:creator"`
-	Language    string `xml:"dc:language"`
-	Publisher   string `xml:"dc:publisher"`
-	Description string `xml:"dc:subject"`
+type FSBook struct {
+	Id           int
+	DirPath      string
+	Epub         string
+	OriginalEpub string
 }

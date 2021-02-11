@@ -10,36 +10,28 @@ import (
 	"github.com/lyderic/tools"
 )
 
-func title(books []Book) (result bool) {
+func title(calibreBooks []CalibreBook) (result bool) {
+	// use saved searches by parsing 'calibredb saved_searches list' and applying!
 	fmt.Println("Checking titles...")
 	count := 0
-	for _, book := range books {
-		if isAccepted(book.Title) { // list of valid title in data.go
-			continue
-		}
-		words := strings.Fields(book.Title)
-		if isFirstLetterLowerCase(book.Title) {
-			report(book, "first letter is not capitalised!")
+	for _, calibreBook := range calibreBooks {
+		words := strings.Fields(calibreBook.Title)
+		if isFirstLetterLowerCase(calibreBook.Title) {
+			report(calibreBook, "first letter is not capitalised!")
 			count++
 		}
 		if containsUpperCaseWord(words) {
-			report(book, "contains at least one word that is all upper case!")
+			report(calibreBook, "contains at least one word that is all upper case!")
 			count++
 		}
-		if strings.Contains(book.Title, " - ") {
-			report(book, "contains a dandling hyphen!")
+		if strings.Contains(calibreBook.Title, " - ") {
+			report(calibreBook, "contains a dandling hyphen!")
 			count++
 		}
-		if strings.Contains(book.Title, "\"") {
-			report(book, "contains a double quote")
+		if strings.Contains(calibreBook.Title, "\"") {
+			report(calibreBook, "contains a double quote")
 			count++
 		}
-		/*
-			if secondWordIsCapitalized(words) {
-				report(book, "second word is capitalized!")
-				count++
-			}
-		*/
 	}
 	if count > 0 {
 		result = false
@@ -80,13 +72,4 @@ func secondWordIsCapitalized(words []string) bool {
 	secondWord := words[1]
 	runes := []rune(secondWord)
 	return unicode.IsUpper(runes[0])
-}
-
-func isAccepted(s string) bool {
-	for _, accepted := range c.Accepted {
-		if s == accepted {
-			return true
-		}
-	}
-	return false
 }

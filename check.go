@@ -5,15 +5,16 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 
 	"github.com/lyderic/tools"
 )
 
-func check(calibreBooks []Book, fsentries []FSEntry) {
+func check(calibreBooks []CalibreBook, fsBooks []FSBook) {
 	fmt.Println("Number of ebooks recorded in calibre:", len(calibreBooks))
-	fmt.Println("Number of ebooks found on filesystem:", len(fsentries))
+	fmt.Println("Number of ebooks found on filesystem:", len(fsBooks))
 	//if performCalibreBuiltinCheck() &&
-	if checkContentOpfInEpub(fsentries) &&
+	if checkContentOpfInEpub(fsBooks) &&
 		title(calibreBooks) && author(calibreBooks) && language(calibreBooks) {
 		tools.PrintGreenln("Data OK")
 	} else {
@@ -22,6 +23,7 @@ func check(calibreBooks []Book, fsentries []FSEntry) {
 }
 
 func performCalibreBuiltinCheck() (result bool) {
+	// close running calibre (calibre -s)
 	fmt.Println("Performing calibre built-in library check... ")
 	cmd := exec.Command("calibredb", "check_library")
 	cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr
@@ -33,21 +35,23 @@ func performCalibreBuiltinCheck() (result bool) {
 		result = false
 		tools.PrintRedln("> Failed!")
 	}
+	// restart calibre (with option to run in bg)
 	return
 }
 
-func checkIds(books []Book, entries []FSEntry) bool {
+func checkIds(calibreBooks []CalibreBook, fsBooks []FSBook) bool {
+	// not necessary, will be done by performCalibreBuiltinCheck
 	fmt.Println("Checking IDs on file system exist in the calibre DB...")
-	for _, entry := range entries {
+	for _, fsBook := range fsBooks {
 		found := false
-		for _, book := range books {
-			if entry.Id == book.Id {
+		for _, calibreBook := range calibreBooks {
+			if fsBook.Id == calibreBook.Id {
 				found = true
 				break
 			}
 		}
 		if !found {
-			fmt.Printf("ID#%04d on filesystem not found in calibre DB!\n", entry.Id)
+			fmt.Printf("ID#%04d on filesystem not found in calibre DB!\n", fsBook.Id)
 			return false
 		}
 	}
@@ -55,13 +59,14 @@ func checkIds(books []Book, entries []FSEntry) bool {
 	return true
 }
 
-func checkContentOpfInEpub(entries []FSEntry) (result bool) {
+func checkContentOpfInEpub(fsBooks []FSBook) (result bool) {
 	fmt.Println("Checking epub on filesystem have a content.opf file...")
 	count := 0
-	for _, entry := range entries {
-		reader, err := zip.OpenReader(entry.Fullpath)
+	for _, fsBook := range fsBooks {
+		fullpath := filepath.Join(fsBook.DirPath, fsBook.Epub)
+		reader, err := zip.OpenReader(fullpath)
 		if err != nil {
-			tools.PrintRedln("Problem with this file:", entry.Fullpath)
+			tools.PrintRedln("Problem with this file:", fullpath)
 			panic(err)
 		}
 		found := false
@@ -72,7 +77,7 @@ func checkContentOpfInEpub(entries []FSEntry) (result bool) {
 			}
 		}
 		if !found {
-			tools.PrintRedln("File with no content.opf:", entry.Fullpath)
+			tools.PrintRedln("File with no content.opf:", fullpath)
 			count++
 			result = false
 		}

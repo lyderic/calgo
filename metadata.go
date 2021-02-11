@@ -2,11 +2,11 @@ package main
 
 import "github.com/lyderic/tools"
 
-func metadata(books []Book) {
+func metadata(calibreBooks []CalibreBook) {
 	count := 0
-	for _, book := range books {
-		if len(book.Formats) < 2 {
-			report(book, "book doesn't at least two formats!")
+	for _, calibreBook := range calibreBooks {
+		if len(calibreBook.Formats) < 2 {
+			report(calibreBook, "book doesn't at least two formats!")
 			count++
 		}
 	}

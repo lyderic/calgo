@@ -13,16 +13,19 @@ func init() {
 }
 
 func main() {
-	debug = flag.Bool("d", false, "debug")
+	debug = flag.Bool("debug", false, "debug")
 	flag.Usage = usage
 	flag.Parse()
-	loadConfiguration()
+	c.load()
 	if len(flag.Args()) != 0 {
 		switch flag.Args()[0] {
 		case "check":
 			calibreBooks := loadFromCalibre()
 			fsentries := loadFromFilesystem()
 			check(calibreBooks, fsentries)
+		case "index":
+			var i Index
+			i.load()
 		case "backup":
 			tools.PrintBlueln("In preparation.....")
 		default:
@@ -32,14 +35,14 @@ func main() {
 	} else {
 		usage()
 	}
-	err := saveConfiguration()
+	err := c.save()
 	if err != nil {
 		panic(err)
 	}
 }
 
 func usage() {
-	fmt.Println("calgo <option> [check]")
+	fmt.Println("calgo <option> [check|backup|index]")
 	fmt.Println("Options:")
 	flag.PrintDefaults()
 }

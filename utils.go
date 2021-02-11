@@ -14,9 +14,9 @@ func IsNumeric(s string) bool {
 	return err == nil
 }
 
-func report(book Book, message string) {
+func report(calibreBook CalibreBook, message string) {
 	fmt.Printf("[%04d] %s (%s): %s\n",
-		book.Id, book.Title, book.Author,
+		calibreBook.Id, calibreBook.Title, calibreBook.Author,
 		message)
 }
 
@@ -31,8 +31,8 @@ func extractIdFromPath(path string) (id int) {
 	return
 }
 
-func dbg(message string) {
+func dbg(format string, args ...interface{}) {
 	if *debug {
-		tools.PrintYellowln(message)
+		tools.PrintYellowf(format, args...)
 	}
 }

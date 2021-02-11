@@ -6,17 +6,17 @@ import (
 	"github.com/lyderic/tools"
 )
 
-func language(books []Book) (result bool) {
+func language(calibreBooks []CalibreBook) (result bool) {
 	fmt.Println("Checking language... ")
 	count := 0
-	for _, book := range books {
-		if len(book.Languages) == 0 {
-			report(book, "no language set!")
+	for _, calibreBook := range calibreBooks {
+		if len(calibreBook.Languages) == 0 {
+			report(calibreBook, "no language set!")
 			count++
 			continue
 		}
-		if book.Languages[0] != c.Language {
-			report(book, fmt.Sprintf("language not %q!", c.Language))
+		if calibreBook.Languages[0] != c.Language {
+			report(calibreBook, fmt.Sprintf("language not %q!", c.Language))
 			count++
 			continue
 		}
