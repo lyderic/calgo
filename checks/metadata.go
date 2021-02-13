@@ -10,7 +10,7 @@ func metadata(calibreBooks []CalibreBook) {
 	count := 0
 	for _, calibreBook := range calibreBooks {
 		if len(calibreBook.Formats) < 2 {
-			Report(calibreBook, "book doesn't at least two formats!")
+			printReport(calibreBook, "book doesn't at least two formats!")
 			count++
 		}
 	}

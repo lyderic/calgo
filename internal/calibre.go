@@ -12,7 +12,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-func calibre(args []string) {
+func Calibre(args []string) {
 	StartCalibre()
 	var cli []string
 	cli = append(cli, "--with-library="+libraryUrl())
@@ -25,7 +25,7 @@ func calibre(args []string) {
 	}
 }
 
-func calibreOutput(args ...string) (output []byte) {
+func CalibreOutput(args ...string) (output []byte) {
 	StartCalibre()
 	var cli []string
 	cli = append(cli, "--with-library="+libraryUrl())
@@ -35,9 +35,19 @@ func calibreOutput(args ...string) (output []byte) {
 	Debug(fmt.Sprintf("[XeQ]:%v", cmd.Args))
 	output, err := cmd.Output()
 	if err != nil {
-		log.Fatal(err)
+		Debug("%#v\n", err)
 	}
 	return
+}
+
+func CalibreOutputErr(args ...string) ([]byte, error) {
+	StartCalibre()
+	var cli []string
+	cli = append(cli, "--with-library="+libraryUrl())
+	cli = append(cli, args...)
+	cmd := exec.Command("calibredb", cli...)
+	Debug(fmt.Sprintf("[XeQ]:%v", cmd.Args))
+	return cmd.Output()
 }
 
 func StartCalibre() {

@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"calgo/checks"
-
 	. "calgo/internal"
+	"fmt"
 
 	"github.com/spf13/cobra"
 )
@@ -22,5 +22,8 @@ func init() {
 
 func check() {
 	calibreBooks := LoadFromCalibre()
+	fmt.Printf("[Checking %d books]\n", len(calibreBooks))
 	checks.Author(calibreBooks)
+	checks.Language(calibreBooks)
+	checks.Title(calibreBooks)
 }

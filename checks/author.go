@@ -9,25 +9,37 @@ import (
 	"github.com/lyderic/tools"
 )
 
-func Author(calibreBooks []CalibreBook) (result bool) {
+func Author(calibreBooks []CalibreBook) {
 	fmt.Println("Checking authors... ")
-	count := 0
+	var reports []Report
 	for _, calibreBook := range calibreBooks {
-		if calibreBook.Author != calibreBook.Sort {
-			Report(calibreBook, "["+calibreBook.Sort+"] authors and author_sort mismatch!")
-			count++
-		}
-		if strings.Contains(calibreBook.Author, ",") {
-			Report(calibreBook, "comma in authors field!")
+		reports = append(reports, checkAuthorMatchSort(calibreBook))
+		reports = append(reports, checkCommaInAuthorsField(calibreBook))
+	}
+	count := 0
+	for _, report := range reports {
+		if report.Message != "" {
+			fmt.Println(report)
 			count++
 		}
 	}
-	if count > 0 {
-		result = false
-		tools.PrintRedln("> Failed!")
-	} else {
-		result = true
+	if count == 0 {
 		tools.PrintGreenln("> Ok")
+	}
+}
+
+func checkAuthorMatchSort(calibreBook CalibreBook) (report Report) {
+	report.Book = calibreBook
+	if calibreBook.Author != calibreBook.Sort {
+		report.Message = "[" + calibreBook.Sort + "] authors and author_sort mismatch!"
+	}
+	return
+}
+
+func checkCommaInAuthorsField(calibreBook CalibreBook) (report Report) {
+	report.Book = calibreBook
+	if strings.Contains(calibreBook.Author, ",") {
+		report.Message = "comma in authors field!"
 	}
 	return
 }

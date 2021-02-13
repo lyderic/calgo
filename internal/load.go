@@ -14,7 +14,7 @@ import (
 func LoadFromCalibre() (calibreBooks []CalibreBook) {
 	var raw []byte
 	fmt.Print("loading calibre data...")
-	raw = calibreOutput("list", "-f", "all", "--for-machine")
+	raw = CalibreOutput("list", "-f", "all", "--for-machine")
 	fmt.Print("\r                              \r")
 	json.Unmarshal(raw, &calibreBooks)
 	Debug("Loaded from calibre: %d books\n", len(calibreBooks))

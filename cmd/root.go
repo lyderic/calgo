@@ -40,7 +40,8 @@ func initConfig() {
 		viper.AddConfigPath(os.Getenv("HOME"))
 		viper.SetConfigName(".calgo")
 	}
-	viper.AutomaticEnv()
+	//viper.AutomaticEnv() // other language in config file is ignored! (as
+	// $LANGUAGE envvar takes precedence
 	if err := viper.ReadInConfig(); err == nil {
 		Debug("Using config file: %s\n", viper.ConfigFileUsed())
 	}
