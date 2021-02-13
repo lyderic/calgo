@@ -27,8 +27,10 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
+	debug := false
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.calgo.yaml)")
-	rootCmd.PersistentFlags().BoolP("debug", "", false, "Show debugging information")
+	rootCmd.PersistentFlags().BoolP("debug", "", debug, "Show debugging information")
+	viper.BindPFlag("debug", rootCmd.PersistentFlags().Lookup("debug"))
 }
 
 func initConfig() {
@@ -42,4 +44,5 @@ func initConfig() {
 	if err := viper.ReadInConfig(); err == nil {
 		Debug("Using config file: %s\n", viper.ConfigFileUsed())
 	}
+	Debug("viper: %#v\n", viper.AllSettings())
 }
