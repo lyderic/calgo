@@ -1,4 +1,4 @@
-package cmd
+package internal
 
 import (
 	"fmt"
@@ -10,12 +10,17 @@ import (
 	"github.com/spf13/viper"
 )
 
+func Debug(format string, args ...interface{}) {
+	if viper.GetBool("debug") {
+		tools.PrintYellowf(format, args...)
+	}
+}
 func IsNumeric(s string) bool {
 	_, err := strconv.ParseFloat(s, 64)
 	return err == nil
 }
 
-func report(calibreBook CalibreBook, message string) {
+func Report(calibreBook CalibreBook, message string) {
 	fmt.Printf("[%04d] %s (%s): %s\n",
 		calibreBook.Id, calibreBook.Title, calibreBook.Author,
 		message)
@@ -30,10 +35,4 @@ func extractIdFromPath(path string) (id int) {
 		log.Fatal(err)
 	}
 	return
-}
-
-func debug(format string, args ...interface{}) {
-	if viper.GetBool("debug") {
-		tools.PrintYellowf(format, args...)
-	}
 }

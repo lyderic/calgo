@@ -1,4 +1,4 @@
-package main
+package checks
 
 import (
 	"fmt"
@@ -6,6 +6,8 @@ import (
 	"regexp"
 	"strings"
 	"unicode"
+
+	. "calgo/internal"
 
 	"github.com/lyderic/tools"
 )
@@ -17,19 +19,19 @@ func title(calibreBooks []CalibreBook) (result bool) {
 	for _, calibreBook := range calibreBooks {
 		words := strings.Fields(calibreBook.Title)
 		if isFirstLetterLowerCase(calibreBook.Title) {
-			report(calibreBook, "first letter is not capitalised!")
+			Report(calibreBook, "first letter is not capitalised!")
 			count++
 		}
 		if containsUpperCaseWord(words) {
-			report(calibreBook, "contains at least one word that is all upper case!")
+			Report(calibreBook, "contains at least one word that is all upper case!")
 			count++
 		}
 		if strings.Contains(calibreBook.Title, " - ") {
-			report(calibreBook, "contains a dandling hyphen!")
+			Report(calibreBook, "contains a dandling hyphen!")
 			count++
 		}
 		if strings.Contains(calibreBook.Title, "\"") {
-			report(calibreBook, "contains a double quote")
+			Report(calibreBook, "contains a double quote")
 			count++
 		}
 	}

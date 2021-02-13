@@ -1,12 +1,16 @@
-package main
+package checks
 
-import "github.com/lyderic/tools"
+import (
+	. "calgo/internal"
+
+	"github.com/lyderic/tools"
+)
 
 func metadata(calibreBooks []CalibreBook) {
 	count := 0
 	for _, calibreBook := range calibreBooks {
 		if len(calibreBook.Formats) < 2 {
-			report(calibreBook, "book doesn't at least two formats!")
+			Report(calibreBook, "book doesn't at least two formats!")
 			count++
 		}
 	}

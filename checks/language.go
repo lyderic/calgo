@@ -1,9 +1,12 @@
-package main
+package checks
 
 import (
 	"fmt"
 
+	. "calgo/internal"
+
 	"github.com/lyderic/tools"
+	"github.com/spf13/viper"
 )
 
 func language(calibreBooks []CalibreBook) (result bool) {
@@ -11,12 +14,12 @@ func language(calibreBooks []CalibreBook) (result bool) {
 	count := 0
 	for _, calibreBook := range calibreBooks {
 		if len(calibreBook.Languages) == 0 {
-			report(calibreBook, "no language set!")
+			Report(calibreBook, "no language set!")
 			count++
 			continue
 		}
-		if calibreBook.Languages[0] != c.Language {
-			report(calibreBook, fmt.Sprintf("language not %q!", c.Language))
+		if calibreBook.Languages[0] != viper.GetString("language") {
+			Report(calibreBook, fmt.Sprintf("language not %q!", viper.GetString("language")))
 			count++
 			continue
 		}

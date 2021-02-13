@@ -1,4 +1,4 @@
-package main
+package internal
 
 import (
 	"encoding/json"
@@ -7,23 +7,23 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/spf13/viper"
 )
 
-func loadFromCalibre() (calibreBooks []CalibreBook) {
+func LoadFromCalibre() (calibreBooks []CalibreBook) {
 	var raw []byte
-	if _, err := os.Stat(cache); os.IsNotExist(err) {
-		fmt.Print("loading calibre data...")
-		raw = calibreOutput("list", "-f", "all", "--for-machine")
-		fmt.Print("\r                              \r")
-	}
+	fmt.Print("loading calibre data...")
+	raw = calibreOutput("list", "-f", "all", "--for-machine")
+	fmt.Print("\r                              \r")
 	json.Unmarshal(raw, &calibreBooks)
-	dbg("Loaded from calibre: %d books\n", len(calibreBooks))
+	Debug("Loaded from calibre: %d books\n", len(calibreBooks))
 	return
 }
 
-func loadFromFilesystem() (fsBooks []FSBook) {
+func LoadFromFilesystem() (fsBooks []FSBook) {
 	fmt.Print("loading filesystem data...")
-	err := filepath.Walk(c.CalibreDir,
+	err := filepath.Walk(viper.GetString("calibredir"),
 		func(path string, finfo os.FileInfo, err error) error {
 			if err != nil {
 				return err
@@ -43,6 +43,6 @@ func loadFromFilesystem() (fsBooks []FSBook) {
 		log.Fatal(err)
 	}
 	fmt.Print("\r                              \r")
-	dbg("Loaded from filesystem: %d books\n", len(fsBooks))
+	Debug("Loaded from filesystem: %d books\n", len(fsBooks))
 	return
 }

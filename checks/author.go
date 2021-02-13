@@ -1,22 +1,24 @@
-package main
+package checks
 
 import (
 	"fmt"
 	"strings"
 
+	. "calgo/internal"
+
 	"github.com/lyderic/tools"
 )
 
-func author(calibreBooks []CalibreBook) (result bool) {
+func Author(calibreBooks []CalibreBook) (result bool) {
 	fmt.Println("Checking authors... ")
 	count := 0
 	for _, calibreBook := range calibreBooks {
 		if calibreBook.Author != calibreBook.Sort {
-			report(calibreBook, "["+calibreBook.Sort+"] authors and author_sort mismatch!")
+			Report(calibreBook, "["+calibreBook.Sort+"] authors and author_sort mismatch!")
 			count++
 		}
 		if strings.Contains(calibreBook.Author, ",") {
-			report(calibreBook, "comma in authors field!")
+			Report(calibreBook, "comma in authors field!")
 			count++
 		}
 	}

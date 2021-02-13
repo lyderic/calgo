@@ -1,4 +1,4 @@
-package main
+package checks
 
 import (
 	"archive/zip"
@@ -7,20 +7,10 @@ import (
 	"os/exec"
 	"path/filepath"
 
+	. "calgo/internal"
+
 	"github.com/lyderic/tools"
 )
-
-func check(calibreBooks []CalibreBook, fsBooks []FSBook) {
-	fmt.Println("Number of ebooks recorded in calibre:", len(calibreBooks))
-	fmt.Println("Number of ebooks found on filesystem:", len(fsBooks))
-	//if performCalibreBuiltinCheck() &&
-	if checkContentOpfInEpub(fsBooks) &&
-		title(calibreBooks) && author(calibreBooks) && language(calibreBooks) {
-		tools.PrintGreenln("Data OK")
-	} else {
-		tools.PrintRedln("Inconsistent data!")
-	}
-}
 
 func performCalibreBuiltinCheck() (result bool) {
 	// close running calibre (calibre -s)

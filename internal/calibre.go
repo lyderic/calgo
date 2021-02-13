@@ -1,19 +1,21 @@
-package main
+package internal
 
 import (
 	"fmt"
 	"log"
 	"os"
 	"os/exec"
+
+	"github.com/spf13/viper"
 )
 
 func calibre(args []string) {
 	var cli []string
-	cli = append(cli, "--with-library="+c.Url)
+	cli = append(cli, "--with-library="+viper.GetString("url"))
 	cli = append(cli, args...)
 	cmd := exec.Command("calibredb", cli...)
 	cmd.Stdin, cmd.Stdout, cmd.Stderr = os.Stdin, os.Stdout, os.Stderr
-	dbg(fmt.Sprintf("[XeQ]:%v", cmd.Args))
+	Debug(fmt.Sprintf("[XeQ]:%v", cmd.Args))
 	if err := cmd.Run(); err != nil {
 		log.Fatal(err)
 	}
@@ -21,11 +23,11 @@ func calibre(args []string) {
 
 func calibreOutput(args ...string) (output []byte) {
 	var cli []string
-	cli = append(cli, "--with-library="+c.Url)
+	cli = append(cli, "--with-library="+viper.GetString("url"))
 	cli = append(cli, args...)
 	cmd := exec.Command("calibredb", cli...)
 	cmd.Stderr = os.Stderr
-	dbg(fmt.Sprintf("[XeQ]:%v", cmd.Args))
+	Debug(fmt.Sprintf("[XeQ]:%v", cmd.Args))
 	output, err := cmd.Output()
 	if err != nil {
 		log.Fatal(err)
