@@ -2,8 +2,8 @@ package checks
 
 import (
 	. "calgo/internal"
+	"encoding/xml"
 	"fmt"
-	"strconv"
 	"strings"
 
 	"github.com/lyderic/tools"
@@ -13,7 +13,6 @@ import (
 type Search struct {
 	Name    string
 	Pattern string
-	BookSet []CalibreBook
 }
 
 type SearchSet struct {
@@ -32,6 +31,7 @@ func (s SearchSet) Display() {
 type SearchResult struct {
 	Search     Search
 	BooksFound []CalibreBook
+	Ids        []string
 }
 
 func (s Search) Process() (result SearchResult) {
@@ -39,43 +39,29 @@ func (s Search) Process() (result SearchResult) {
 	result.Search = s
 	output, err := CalibreOutputErr("search", s.Pattern)
 	if err != nil {
-		result.BooksFound = []CalibreBook{}
+		result.Ids = []string{}
 	} else {
-		result.BooksFound = parseSearchOutput(s.BookSet, output)
+		result.Ids = strings.Split(string(output), ",")
 	}
 	return
 }
 
 func (r SearchResult) Display() {
-	if len(r.BooksFound) == 0 {
+	if len(r.Ids) == 0 {
 		fmt.Printf("No books found for search %q%s\n",
 			r.Search.Name, showPattern(r.Search.Pattern))
 		return
 	}
-	fmt.Printf("Search %q%s found %d book%s:\n",
-		r.Search.Name, showPattern(r.Search.Pattern),
-		len(r.BooksFound), tools.Ternary(len(r.BooksFound) > 1, "s", ""))
-	for _, calibreBook := range r.BooksFound {
-		fmt.Println(calibreBook)
+	for _, id := range r.Ids {
+		fmt.Printf("Search %q%s found %d book%s:\n",
+			r.Search.Name, showPattern(r.Search.Pattern),
+			len(r.Ids), tools.Ternary(len(r.Ids) > 1, "s", ""))
+		output := CalibreOutput("show_metadata", id, "--as-opf")
+		var opf Opf
+		xml.Unmarshal(output, &opf)
+		Debug("%#v\n", opf)
+		fmt.Printf("%s (%s)\n", opf.Metadata.Title, opf.Metadata.Creator)
 	}
-}
-
-func parseSearchOutput(calibreBooks []CalibreBook,
-	output []byte) (books []CalibreBook) {
-	ids := strings.Split(string(output), ",")
-	for _, book := range calibreBooks {
-		for _, id := range ids {
-			idint, err := strconv.Atoi(id)
-			if err != nil {
-				tools.PrintRedf("[%s,%d]", id, idint)
-			}
-			if book.Id == idint {
-				books = append(books, book)
-				break
-			}
-		}
-	}
-	return
 }
 
 func showPattern(s string) (showing string) {

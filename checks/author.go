@@ -4,14 +4,13 @@ import (
 	. "calgo/internal"
 )
 
-func Author(calibreBooks []CalibreBook) {
+func Author() {
 	set := SearchSet{
 		Name: "authors",
 		Searches: []Search{
 			{
 				Name:    "comma in author",
 				Pattern: `authors:","`,
-				BookSet: calibreBooks,
 			},
 		},
 	}

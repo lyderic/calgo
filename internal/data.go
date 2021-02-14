@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"encoding/xml"
 	"fmt"
 	"time"
 )
@@ -20,6 +21,20 @@ type CalibreBook struct {
 
 func (c CalibreBook) String() string {
 	return fmt.Sprintf("[%04d] %s (%s)", c.Id, c.Title, c.Author)
+}
+
+type Opf struct {
+	Package  xml.Name `xml:"package"`
+	Metadata struct {
+		ISBN        string `xml:"identifier"`
+		Title       string `xml:"title"`
+		Description string `xml:"description"`
+		Creator     string `xml:"creator"`
+		Date        string `xml:"date"`
+		Publisher   string `xml:"publisher"`
+		Language    string `xml:"language"`
+		Format      string `xml:"format"`
+	} `xml:"metadata"`
 }
 
 type FSBook struct {

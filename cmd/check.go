@@ -23,7 +23,7 @@ func init() {
 func check() {
 	calibreBooks := LoadFromCalibre()
 	fmt.Printf("[Checking %d books]\n", len(calibreBooks))
-	checks.Author(calibreBooks)
-	checks.Language(calibreBooks)
-	checks.Title(calibreBooks)
+	checks.Author()
+	checks.Language()
+	checks.Title()
 }
