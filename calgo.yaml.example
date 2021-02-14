@@ -1,0 +1,24 @@
+port: 8080
+library: fr
+language: fra
+calibredir: /home/lyderic/ebooks/collections/fr
+index: /home/lyderic/ebooks/collections/index-fr.yaml
+checks:
+- name:    authors with commas
+  pattern: authors:","
+- name:    authors starting with lower case
+  pattern: authors:"~^[a-z]"
+- name:    language not set
+  pattern: language:false
+- name:    language not French
+  pattern: not languages:fra
+- name:    title contains a dandling hyphen
+  pattern: title:" - "
+- name:    title contains a double quote
+  pattern: title:"\""
+- name:    title starts with lower case
+  pattern: title:"~^[a-z]" and not title:"meurtre.com"
+- name:    title with at least 3 upper case letters
+  pattern: title:"~[A-Z][A-Z][A-Z]" and not title:"~(ABC|CQFD|K-PAX|SAS|SSN|URSS)" and not title:"~(III|VII|VIII|XII|XIV|XVI|XIX|XXI)"
+- name:    title with at least 3 upper case letters (no SAS)
+  pattern: title:"~[A-Z][A-Z][A-Z]" and not title:"~^SAS" and not title:"~(III|VII|VIII|XII|XIV|XVI|XIX|XXI)"
