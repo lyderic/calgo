@@ -50,6 +50,17 @@ func CalibreOutputErr(args ...string) ([]byte, error) {
 	return cmd.Output()
 }
 
+func Calibredb(args []string) {
+	StartCalibre()
+	var cli []string
+	cli = append(cli, "--with-library="+libraryUrl())
+	cli = append(cli, args...)
+	cmd := exec.Command("calibredb", cli...)
+	cmd.Stdin, cmd.Stdout, cmd.Stderr = os.Stdin, os.Stdout, os.Stderr
+	Debug("[XeQ]:%v\n", cmd.Args)
+	cmd.Run()
+}
+
 func StartCalibre() {
 	Debug("Looking for calibre...\n")
 	if localhostPortIsInUse(viper.GetString("port")) {

@@ -1,6 +1,9 @@
 package internal
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 type CalibreBook struct {
 	Id          int      `json:"id"`
@@ -13,6 +16,10 @@ type CalibreBook struct {
 	Formats     []string `json:"formats"`
 	Publisher   string   `json:"publisher"`
 	Size        int      `json:"size"`
+}
+
+func (c CalibreBook) String() string {
+	return fmt.Sprintf("[%04d] %s (%s)", c.Id, c.Title, c.Author)
 }
 
 type FSBook struct {
