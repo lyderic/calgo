@@ -26,15 +26,22 @@ func (c CalibreBook) String() string {
 type Opf struct {
 	Package  xml.Name `xml:"package"`
 	Metadata struct {
-		ISBN        string `xml:"identifier"`
-		Title       string `xml:"title"`
-		Description string `xml:"description"`
-		Creator     string `xml:"creator"`
-		Date        string `xml:"date"`
-		Publisher   string `xml:"publisher"`
-		Language    string `xml:"language"`
-		Format      string `xml:"format"`
+		ISBN        string    `xml:"identifier"`
+		Title       string    `xml:"title"`
+		Description string    `xml:"description"`
+		Creator     string    `xml:"creator"`
+		Date        string    `xml:"date"`
+		Publisher   string    `xml:"publisher"`
+		Language    string    `xml:"language"`
+		Format      string    `xml:"format"`
+		OpfMetas    []OpfMeta `xml:"meta"`
 	} `xml:"metadata"`
+}
+
+type OpfMeta struct {
+	XMLName xml.Name `xml:"meta"`
+	Name    string   `xml:"name,attr"`
+	Content string   `xml:"content,attr"`
 }
 
 type FSBook struct {

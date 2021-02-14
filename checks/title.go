@@ -20,6 +20,10 @@ func Title() {
 				Name:    "title with at least 3 upper case letters",
 				Pattern: `title:"~[A-Z][A-Z][A-Z]" and not title:"~(ABC|CQFD|K-PAX|SAS|SSN|URSS)" and not title:"~(III|VII|VIII|XII|XIV|XVI|XIX|XXI)"`,
 			},
+			{
+				Name:    "title with at least 3 upper case letters (less exceptions)",
+				Pattern: `title:"~[A-Z][A-Z][A-Z]" and not title:"~^SAS" and not title:"~(III|VII|VIII|XII|XIV|XVI|XIX|XXI)"`,
+			},
 		},
 	}
 	set.Display()

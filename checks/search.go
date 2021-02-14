@@ -2,9 +2,8 @@ package checks
 
 import (
 	. "calgo/internal"
-	"encoding/xml"
+	"encoding/json"
 	"fmt"
-	"strings"
 
 	"github.com/lyderic/tools"
 	"github.com/spf13/viper"
@@ -29,38 +28,30 @@ func (s SearchSet) Display() {
 }
 
 type SearchResult struct {
-	Search     Search
-	BooksFound []CalibreBook
-	Ids        []string
+	Search Search
+	Books  []CalibreBook
 }
 
 func (s Search) Process() (result SearchResult) {
 	Debug("Running search: %#v\n", s)
 	result.Search = s
-	output, err := CalibreOutputErr("search", s.Pattern)
-	if err != nil {
-		result.Ids = []string{}
-	} else {
-		result.Ids = strings.Split(string(output), ",")
-	}
+	output := CalibreOutput("list",
+		"-s", s.Pattern, "-f", "all", "--for-machine")
+	json.Unmarshal(output, &result.Books)
 	return
 }
 
 func (r SearchResult) Display() {
-	if len(r.Ids) == 0 {
+	if len(r.Books) == 0 {
 		fmt.Printf("No books found for search %q%s\n",
 			r.Search.Name, showPattern(r.Search.Pattern))
 		return
 	}
-	for _, id := range r.Ids {
-		fmt.Printf("Search %q%s found %d book%s:\n",
-			r.Search.Name, showPattern(r.Search.Pattern),
-			len(r.Ids), tools.Ternary(len(r.Ids) > 1, "s", ""))
-		output := CalibreOutput("show_metadata", id, "--as-opf")
-		var opf Opf
-		xml.Unmarshal(output, &opf)
-		Debug("%#v\n", opf)
-		fmt.Printf("%s (%s)\n", opf.Metadata.Title, opf.Metadata.Creator)
+	fmt.Printf("Search %q%s found %d book%s:\n",
+		r.Search.Name, showPattern(r.Search.Pattern),
+		len(r.Books), tools.Ternary(len(r.Books) > 1, "s", ""))
+	for _, book := range r.Books {
+		fmt.Println(book)
 	}
 }
 
