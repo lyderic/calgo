@@ -10,8 +10,8 @@ import (
 )
 
 type Search struct {
-	Name    string
-	Pattern string
+	Name    string `yaml:"name"`
+	Pattern string `yaml:"pattern"`
 }
 
 type SearchSet struct {
