@@ -31,6 +31,8 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.calgo.yaml)")
 	rootCmd.PersistentFlags().BoolP("debug", "", debug, "Show debugging information")
 	viper.BindPFlag("debug", rootCmd.PersistentFlags().Lookup("debug"))
+	rootCmd.PersistentFlags().BoolP("verbose", "v", debug, "Show debugging information")
+	viper.BindPFlag("verbose", rootCmd.PersistentFlags().Lookup("verbose"))
 }
 
 func initConfig() {
@@ -40,8 +42,6 @@ func initConfig() {
 		viper.AddConfigPath(os.Getenv("HOME"))
 		viper.SetConfigName(".calgo")
 	}
-	//viper.AutomaticEnv() // other language in config file is ignored! (as
-	// $LANGUAGE envvar takes precedence
 	if err := viper.ReadInConfig(); err == nil {
 		Debug("Using config file: %s\n", viper.ConfigFileUsed())
 	}

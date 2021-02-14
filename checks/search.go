@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/lyderic/tools"
+	"github.com/spf13/viper"
 )
 
 type Search struct {
@@ -47,12 +48,12 @@ func (s Search) Process() (result SearchResult) {
 
 func (r SearchResult) Display() {
 	if len(r.BooksFound) == 0 {
-		fmt.Printf("No books found for search %q [%s]\n",
-			r.Search.Name, r.Search.Pattern)
+		fmt.Printf("No books found for search %q%s\n",
+			r.Search.Name, showPattern(r.Search.Pattern))
 		return
 	}
-	fmt.Printf("Search %q [%s] found %d book%s:\n",
-		r.Search.Name, r.Search.Pattern,
+	fmt.Printf("Search %q%s found %d book%s:\n",
+		r.Search.Name, showPattern(r.Search.Pattern),
 		len(r.BooksFound), tools.Ternary(len(r.BooksFound) > 1, "s", ""))
 	for _, calibreBook := range r.BooksFound {
 		fmt.Println(calibreBook)
@@ -73,6 +74,13 @@ func parseSearchOutput(calibreBooks []CalibreBook,
 				break
 			}
 		}
+	}
+	return
+}
+
+func showPattern(s string) (showing string) {
+	if viper.GetBool("verbose") {
+		return fmt.Sprintf(" [%s]", s)
 	}
 	return
 }
