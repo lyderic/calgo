@@ -7,21 +7,21 @@ import (
 	"github.com/spf13/viper"
 )
 
-var checkCmd = &cobra.Command{
-	Use:   "check",
-	Short: "check consistency of database and filesystem",
+var searchesCmd = &cobra.Command{
+	Use:   "searches",
+	Short: "run searches defined in configuration file",
 	Run: func(cmd *cobra.Command, args []string) {
-		check()
+		searches()
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(checkCmd)
+	rootCmd.AddCommand(searchesCmd)
 }
 
-func check() {
+func searches() {
 	var searches []checks.Search
-	err := viper.UnmarshalKey("checks", &searches)
+	err := viper.UnmarshalKey("searches", &searches)
 	if err != nil {
 		panic(err)
 	}
