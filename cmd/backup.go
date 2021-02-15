@@ -2,7 +2,8 @@ package cmd
 
 import (
 	"os"
-	"path/filepath"
+	"os/exec"
+	"time"
 
 	. "calgo/internal"
 
@@ -22,18 +23,25 @@ func init() {
 	rootCmd.AddCommand(backupCmd)
 }
 
-// rename this command as 'backup'
 // write a report stating the date + possibly other useful information
 func backup() {
-	basedir := viper.GetString("backup-dir")
-	datadir := filepath.Join(basedir, viper.GetString("library"))
-	//configdir := filepath.Join(basedir, viper.GetString("calibre-config-dir"))
-	if _, err := os.Stat(basedir); os.IsNotExist(err) {
-		Red("Backup directory not found! %q\n", basedir)
+	backupdir := viper.GetString("backup-dir")
+	ebooksdir := viper.GetString("ebooks-dir")
+	configdir := viper.GetString("calibre-config-dir")
+	if _, err := os.Stat(backupdir); os.IsNotExist(err) {
+		Red("Backup directory not found! %q\n", backupdir)
 		return
 	}
-	cmd := Calibredb("export", "--all", "--progress", "--to-dir="+datadir)
-	cmd.Stdout = os.Stdout
+	rsync(ebooksdir, backupdir+"/ebooks")
+	rsync(configdir, backupdir+"/calibre-config")
+}
+
+func rsync(src, dst string) {
+	start := time.Now()
+	cmd := exec.Command("rsync", "-Pav", "--delete", src+"/", dst+"/")
+	cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr
+	Debug("[XeQ]-%v\n", cmd.Args)
 	cmd.Start()
 	cmd.Wait()
+	Green("Synced %q to %q in %v\n", src, dst, time.Since(start))
 }
