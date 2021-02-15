@@ -16,7 +16,9 @@ var cfgFile string
 var rootCmd = &cobra.Command{
 	Use:   "calgo",
 	Short: "Helper app to manage calibre database",
-	//Run: func(cmd *cobra.Command, args []string) { },
+	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		StartCalibre()
+	},
 }
 
 func Execute() {

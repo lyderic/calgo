@@ -11,62 +11,34 @@ import (
 	"github.com/spf13/viper"
 )
 
-func Calibre(args []string) {
-	StartCalibre()
+func Calibredb(args ...string) (cmd *exec.Cmd) {
 	var cli []string
 	cli = append(cli, "--with-library="+libraryUrl())
 	cli = append(cli, args...)
-	cmd := exec.Command("calibredb", cli...)
-	cmd.Stdin, cmd.Stdout, cmd.Stderr = os.Stdin, os.Stdout, os.Stderr
+	cmd = exec.Command("calibredb", cli...)
 	Debug(fmt.Sprintf("[XeQ]:%v\n", cmd.Args))
-	if err := cmd.Run(); err != nil {
-		log.Fatal(err)
-	}
+	return
 }
 
 func CalibreOutput(args ...string) (output []byte) {
-	StartCalibre()
-	var cli []string
-	cli = append(cli, "--with-library="+libraryUrl())
-	cli = append(cli, args...)
-	cmd := exec.Command("calibredb", cli...)
+	cmd := Calibredb(args...)
 	cmd.Stderr = os.Stderr
-	Debug(fmt.Sprintf("[XeQ]:%v\n", cmd.Args))
-	output, err := cmd.Output()
-	if err != nil {
-		Debug("%#v\n", err)
-	}
+	output, _ = cmd.Output()
 	return
 }
 
 func CalibreOutputErr(args ...string) ([]byte, error) {
-	StartCalibre()
-	var cli []string
-	cli = append(cli, "--with-library="+libraryUrl())
-	cli = append(cli, args...)
-	cmd := exec.Command("calibredb", cli...)
-	Debug(fmt.Sprintf("[XeQ]:%v\n", cmd.Args))
+	cmd := Calibredb(args...)
 	return cmd.Output()
-}
-
-func Calibredb(args []string) {
-	StartCalibre()
-	var cli []string
-	cli = append(cli, "--with-library="+libraryUrl())
-	cli = append(cli, args...)
-	cmd := exec.Command("calibredb", cli...)
-	cmd.Stdin, cmd.Stdout, cmd.Stderr = os.Stdin, os.Stdout, os.Stderr
-	Debug("[XeQ]:%v\n", cmd.Args)
-	cmd.Run()
 }
 
 func StartCalibre() {
 	Debug("Looking for calibre... ")
-	if localhostPortIsInUse(viper.GetString("port")) {
+	if portInUse(viper.GetString("port")) {
 		Debug("calibre is running. All good!\n")
 		return
 	}
-	Yellow("\nCalibre is not running! Starting, please wait..")
+	Yellow("Calibre is not running! Starting, please wait..")
 	cmd := exec.Command("calibre", "--detach", "--no-update-check", "--start-in-tray")
 	cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr
 	err := cmd.Run()
@@ -75,15 +47,14 @@ func StartCalibre() {
 		log.Fatal(err)
 	}
 	for {
-		if !localhostPortIsInUse(viper.GetString("port")) {
+		if !portInUse(viper.GetString("port")) {
 			Yellow(".")
 			time.Sleep(time.Second * 1)
 		} else {
 			break
 		}
 	}
-	Yellow(" done.\n")
-
+	Green(" done.\n")
 }
 
 func libraryUrl() string {
@@ -92,7 +63,7 @@ func libraryUrl() string {
 		viper.GetString("library"))
 }
 
-func localhostPortIsInUse(port string) (inUse bool) {
+func portInUse(port string) (inUse bool) {
 	inUse = false
 	conn, _ := net.DialTimeout("tcp", net.JoinHostPort("", port), time.Second)
 	if conn != nil {
