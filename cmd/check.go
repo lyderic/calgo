@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"calgo/checks"
+	"sync"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -25,8 +26,16 @@ func check() {
 	if err != nil {
 		panic(err)
 	}
+	var wg sync.WaitGroup
 	for _, search := range searches {
-		result := search.Process()
-		result.Display()
+		wg.Add(1)
+		go routine(search, &wg)
 	}
+	wg.Wait()
+}
+
+func routine(search checks.Search, wg *sync.WaitGroup) {
+	defer wg.Done()
+	result := search.Process()
+	result.Display()
 }

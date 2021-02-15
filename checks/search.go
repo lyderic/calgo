@@ -37,8 +37,10 @@ func (r SearchResult) Display() {
 			r.Search.Name, showPattern(r.Search.Pattern))
 		return
 	}
-	fmt.Printf("Found %d book%s:\n", len(r.Books),
-		tools.Ternary(len(r.Books) > 1, "s", ""))
+	fmt.Printf("Found %d book%s for search %q:\n",
+		len(r.Books),
+		tools.Ternary(len(r.Books) > 1, "s", ""),
+		r.Search.Name)
 	for _, book := range r.Books {
 		fmt.Println(book)
 	}
