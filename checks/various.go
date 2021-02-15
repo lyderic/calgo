@@ -81,3 +81,18 @@ func checkContentOpfInEpub(fsBooks []FSBook) (result bool) {
 	}
 	return
 }
+
+func metadata(calibreBooks []CalibreBook) {
+	count := 0
+	for _, calibreBook := range calibreBooks {
+		if len(calibreBook.Formats) < 2 {
+			fmt.Println(calibreBook, ": book doesn't at least two formats!")
+			count++
+		}
+	}
+	if count > 0 {
+		tools.PrintRedln(count, "book(s) don't have at least two formats!")
+	} else {
+		tools.PrintGreenln("All books have at least two formats. All good!")
+	}
+}

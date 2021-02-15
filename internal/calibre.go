@@ -8,7 +8,6 @@ import (
 	"os/exec"
 	"time"
 
-	"github.com/lyderic/tools"
 	"github.com/spf13/viper"
 )
 
@@ -19,7 +18,7 @@ func Calibre(args []string) {
 	cli = append(cli, args...)
 	cmd := exec.Command("calibredb", cli...)
 	cmd.Stdin, cmd.Stdout, cmd.Stderr = os.Stdin, os.Stdout, os.Stderr
-	Debug(fmt.Sprintf("[XeQ]:%v", cmd.Args))
+	Debug(fmt.Sprintf("[XeQ]:%v\n", cmd.Args))
 	if err := cmd.Run(); err != nil {
 		log.Fatal(err)
 	}
@@ -32,7 +31,7 @@ func CalibreOutput(args ...string) (output []byte) {
 	cli = append(cli, args...)
 	cmd := exec.Command("calibredb", cli...)
 	cmd.Stderr = os.Stderr
-	Debug(fmt.Sprintf("[XeQ]:%v", cmd.Args))
+	Debug(fmt.Sprintf("[XeQ]:%v\n", cmd.Args))
 	output, err := cmd.Output()
 	if err != nil {
 		Debug("%#v\n", err)
@@ -46,7 +45,7 @@ func CalibreOutputErr(args ...string) ([]byte, error) {
 	cli = append(cli, "--with-library="+libraryUrl())
 	cli = append(cli, args...)
 	cmd := exec.Command("calibredb", cli...)
-	Debug(fmt.Sprintf("[XeQ]:%v", cmd.Args))
+	Debug(fmt.Sprintf("[XeQ]:%v\n", cmd.Args))
 	return cmd.Output()
 }
 
@@ -62,28 +61,28 @@ func Calibredb(args []string) {
 }
 
 func StartCalibre() {
-	Debug("Looking for calibre...\n")
+	Debug("Looking for calibre... ")
 	if localhostPortIsInUse(viper.GetString("port")) {
-		Debug("calibre is running")
+		Debug("calibre is running. All good!\n")
 		return
 	}
-	tools.PrintRed("\nCalibre is not running! Starting, please wait..")
+	Yellow("\nCalibre is not running! Starting, please wait..")
 	cmd := exec.Command("calibre", "--detach", "--no-update-check", "--start-in-tray")
 	cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr
 	err := cmd.Run()
 	if err != nil {
-		tools.PrintRedln("calibre couldn't be started!!! Aborting")
+		Red("calibre couldn't be started!!! Aborting")
 		log.Fatal(err)
 	}
 	for {
 		if !localhostPortIsInUse(viper.GetString("port")) {
-			tools.PrintRed(".")
+			Yellow(".")
 			time.Sleep(time.Second * 1)
 		} else {
 			break
 		}
 	}
-	tools.PrintRedln(" done.")
+	Yellow(" done.\n")
 
 }
 
@@ -99,7 +98,7 @@ func localhostPortIsInUse(port string) (inUse bool) {
 	if conn != nil {
 		conn.Close()
 		inUse = true
-		Debug("Port %s is in use\n", port)
+		Debug("tcp/%s is in use... ", port)
 	}
 	return
 }

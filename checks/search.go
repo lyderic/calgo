@@ -14,26 +14,16 @@ type Search struct {
 	Pattern string `yaml:"pattern"`
 }
 
-type SearchSet struct {
-	Name     string
-	Searches []Search
-}
-
-func (s SearchSet) Display() {
-	tools.PrintBluef("Checking %s...\n", s.Name)
-	for _, search := range s.Searches {
-		result := search.Process()
-		result.Display()
-	}
-}
-
 type SearchResult struct {
 	Search Search
 	Books  []CalibreBook
 }
 
 func (s Search) Process() (result SearchResult) {
-	Debug("Running search: %#v\n", s)
+	Blue("Running search: %q...\n", s.Name)
+	if viper.GetBool("verbose") {
+		Blue("[%s]\n", s.Pattern)
+	}
 	result.Search = s
 	output := CalibreOutput("list",
 		"-s", s.Pattern, "-f", "all", "--for-machine")
@@ -47,9 +37,8 @@ func (r SearchResult) Display() {
 			r.Search.Name, showPattern(r.Search.Pattern))
 		return
 	}
-	fmt.Printf("Search %q%s found %d book%s:\n",
-		r.Search.Name, showPattern(r.Search.Pattern),
-		len(r.Books), tools.Ternary(len(r.Books) > 1, "s", ""))
+	fmt.Printf("Found %d book%s:\n", len(r.Books),
+		tools.Ternary(len(r.Books) > 1, "s", ""))
 	for _, book := range r.Books {
 		fmt.Println(book)
 	}

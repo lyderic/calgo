@@ -1,7 +1,8 @@
 package cmd
 
 import (
-	"github.com/lyderic/tools"
+	. "calgo/internal"
+
 	"github.com/spf13/cobra"
 )
 
@@ -11,7 +12,7 @@ var completionCmd = &cobra.Command{
 	DisableFlagsInUseLine: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		rootCmd.GenBashCompletionFile("calgo.completion")
-		tools.PrintGreenln("written completion file: calgo.completion")
+		Green("written completion file: calgo.completion\n")
 	},
 }
 

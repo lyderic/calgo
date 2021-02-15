@@ -5,15 +5,15 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/lyderic/tools"
 	"github.com/spf13/viper"
 )
 
 func Debug(format string, args ...interface{}) {
 	if viper.GetBool("debug") {
-		tools.PrintYellowf(format, args...)
+		Cyan(format, args...)
 	}
 }
+
 func IsNumeric(s string) bool {
 	_, err := strconv.ParseFloat(s, 64)
 	return err == nil
