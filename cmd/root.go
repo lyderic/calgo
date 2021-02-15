@@ -8,6 +8,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"gopkg.in/ffmt.v1"
 )
 
 var cfgFile string
@@ -45,5 +46,7 @@ func initConfig() {
 	if err := viper.ReadInConfig(); err == nil {
 		Debug("Using config file: %s\n", viper.ConfigFileUsed())
 	}
-	Debug("viper: %#v\n", viper.AllSettings())
+	if viper.GetBool("debug") && viper.GetBool("verbose") {
+		ffmt.P("viper: %#v\n", viper.AllSettings())
+	}
 }

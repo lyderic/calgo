@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"calgo/checks"
+	"fmt"
 	"sync"
 
 	"github.com/spf13/cobra"
@@ -26,6 +27,7 @@ func check() {
 	if err != nil {
 		panic(err)
 	}
+	fmt.Println("Checking, please wait...")
 	var wg sync.WaitGroup
 	for _, search := range searches {
 		wg.Add(1)

@@ -20,7 +20,7 @@ type SearchResult struct {
 }
 
 func (s Search) Process() (result SearchResult) {
-	Blue("Running search: %q...\n", s.Name)
+	Debug("Running search: %q...\n", s.Name)
 	if viper.GetBool("verbose") {
 		Blue("[%s]\n", s.Pattern)
 	}
@@ -33,16 +33,16 @@ func (s Search) Process() (result SearchResult) {
 
 func (r SearchResult) Display() {
 	if len(r.Books) == 0 {
-		fmt.Printf("No books found for search %q%s\n",
+		Blue("No books found for search %q%s\n",
 			r.Search.Name, showPattern(r.Search.Pattern))
 		return
 	}
-	fmt.Printf("Found %d book%s for search %q:\n",
+	Green("Found %d book%s for search %q:\n",
 		len(r.Books),
 		tools.Ternary(len(r.Books) > 1, "s", ""),
 		r.Search.Name)
 	for _, book := range r.Books {
-		fmt.Println(book)
+		Green("%s\n", book)
 	}
 }
 
