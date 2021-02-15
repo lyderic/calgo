@@ -2,8 +2,6 @@ package cmd
 
 import (
 	"os"
-	"os/exec"
-	"time"
 
 	. "calgo/internal"
 
@@ -21,6 +19,8 @@ var backupCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(backupCmd)
+	backupCmd.PersistentFlags().BoolP("embed", "e", false, "embed metadata before syncing")
+	viper.BindPFlag("embed", backupCmd.PersistentFlags().Lookup("embed"))
 }
 
 // write a report stating the date + possibly other useful information
@@ -32,16 +32,9 @@ func backup() {
 		Red("Backup directory not found! %q\n", backupdir)
 		return
 	}
-	rsync(ebooksdir, backupdir+"/ebooks")
-	rsync(configdir, backupdir+"/calibre-config")
-}
-
-func rsync(src, dst string) {
-	start := time.Now()
-	cmd := exec.Command("rsync", "-Pav", "--delete", src+"/", dst+"/")
-	cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr
-	Debug("[XeQ]-%v\n", cmd.Args)
-	cmd.Start()
-	cmd.Wait()
-	Green("Synced %q to %q in %v\n", src, dst, time.Since(start))
+	if viper.GetBool("embed") {
+		Embed()
+	}
+	Rsync(ebooksdir, backupdir+"/ebooks")
+	Rsync(configdir, backupdir+"/calibre-config")
 }
