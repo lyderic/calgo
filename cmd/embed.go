@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	. "calgo/internal"
+
 	"github.com/spf13/cobra"
 )
 
