@@ -36,5 +36,5 @@ func backup() {
 		Embed()
 	}
 	Rsync(ebooksdir, backupdir+"/ebooks")
-	Rsync(configdir, backupdir+"/calibre-config")
+	Rsync(configdir, backupdir+"/dotconfig_calibre")
 }
